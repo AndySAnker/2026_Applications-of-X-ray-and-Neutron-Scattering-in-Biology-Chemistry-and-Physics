@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Quiz 2026 — Applications of X-ray and Neutron Scattering in Biology, Chemistry and Physics</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --panel: #1e293b;
+    --panel-2: #273449;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --accent: #38bdf8;
+    --accent-2: #818cf8;
+    --correct: #22c55e;
+    --correct-bg: rgba(34, 197, 94, 0.15);
+    --wrong: #ef4444;
+    --wrong-bg: rgba(239, 68, 68, 0.15);
+    --border: #334155;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: linear-gradient(160deg, #0f172a 0%, #111c33 100%);
+    color: var(--text);
+    line-height: 1.55;
+    min-height: 100vh;
+  }
+  header {
+    text-align: center;
+    padding: 32px 20px 8px;
+  }
+  header h1 { margin: 0 0 10px; font-size: 1.35rem; line-height: 1.35; max-width: 720px; margin-left: auto; margin-right: auto; }
+  header p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+  header .course-links { margin-top: 8px; font-size: 0.9rem; }
+  header .course-links a { text-decoration: none; }
+  header .course-links a:hover { text-decoration: underline; }
+  .wrap { max-width: 820px; margin: 0 auto; padding: 16px 18px 80px; }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    margin: 18px 0 8px;
+  }
+  .seg {
+    display: inline-flex;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .seg button {
+    background: transparent;
+    color: var(--muted);
+    border: none;
+    padding: 9px 16px;
+    cursor: pointer;
+    font-size: 0.92rem;
+    font-weight: 600;
+  }
+  .seg button.active { background: var(--accent); color: #06283d; }
+
+  .progress-bar {
+    height: 8px;
+    background: var(--panel);
+    border-radius: 99px;
+    overflow: hidden;
+    margin: 14px 0 4px;
+    border: 1px solid var(--border);
+  }
+  .progress-fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: width .3s; }
+  .meta-row { display:flex; justify-content: space-between; color: var(--muted); font-size: 0.85rem; margin-bottom: 6px;}
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px 22px 20px;
+    margin-top: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  }
+  .topic-tag {
+    display: block;
+    width: -moz-fit-content;
+    width: fit-content;
+    margin: 0 auto 14px;
+    text-align: center;
+    background: var(--panel-2);
+    color: var(--accent);
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 99px;
+  }
+  .lead { color: var(--muted); font-size: 1.05rem; line-height: 1.6; margin: 0 0 14px; }
+  .intro h2 { text-align: center; margin: 2px 0 16px; font-size: 1.3rem; }
+  .intro ul { margin: 0 0 16px; padding-left: 22px; }
+  .intro li { margin: 9px 0; font-size: 1.05rem; line-height: 1.55; }
+  .intro-note { font-size: 1.02rem; line-height: 1.62; color: var(--muted); }
+  .question { font-size: 1.12rem; font-weight: 600; margin: 0 0 16px; }
+  .hint { color: var(--accent-2); font-size: 0.8rem; margin: -8px 0 14px; font-weight:600; }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option {
+    text-align: left;
+    background: var(--panel-2);
+    border: 1.5px solid var(--border);
+    color: var(--text);
+    border-radius: 11px;
+    padding: 13px 15px;
+    cursor: pointer;
+    font-size: 0.98rem;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    transition: border-color .15s, background .15s;
+  }
+  .option:hover:not(.locked) { border-color: var(--accent); }
+  .option .letter {
+    flex: 0 0 26px;
+    height: 26px;
+    border-radius: 7px;
+    background: var(--bg);
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .option.selected { border-color: var(--accent); }
+  .option.correct { border-color: var(--correct); background: var(--correct-bg); }
+  .option.correct .letter { background: var(--correct); color: #052e16; }
+  .option.wrong { border-color: var(--wrong); background: var(--wrong-bg); }
+  .option.wrong .letter { background: var(--wrong); color: #450a0a; }
+  .option.locked { cursor: default; }
+
+  .explanation {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-left: 4px solid var(--accent);
+    background: rgba(56, 189, 248, 0.08);
+    border-radius: 8px;
+    font-size: 1.12rem;
+    line-height: 1.65;
+  }
+  .explanation strong { color: var(--accent); }
+  .explanation.good { border-left-color: var(--correct); background: var(--correct-bg); }
+  .explanation.good strong { color: var(--correct); }
+  .explanation.bad { border-left-color: var(--wrong); background: var(--wrong-bg); }
+  .explanation.bad strong { color: var(--wrong); }
+
+  .btn-row { display: flex; justify-content: space-between; gap: 12px; margin-top: 18px; }
+  button.nav {
+    background: var(--accent);
+    color: #06283d;
+    border: none;
+    border-radius: 10px;
+    padding: 11px 22px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+  }
+  button.nav.ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+  button.nav:disabled { opacity: .4; cursor: not-allowed; }
+
+  .results { text-align: center; }
+  .results .score { font-size: 3rem; font-weight: 800; color: var(--accent); margin: 8px 0; }
+  .results p { color: var(--muted); }
+
+  footer { text-align: center; color: var(--muted); font-size: 0.78rem; padding: 10px 20px 30px; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Applications of X-ray and Neutron Scattering in Biology, Chemistry and Physics</h1>
+    <p class="course-links">
+      <a href="https://kurser.ku.dk/course/nfyk12004u/">KU (NFYK12004U)</a>
+      &nbsp;&middot;&nbsp;
+      <a href="https://lifelonglearning.dtu.dk/en/energy/single-course/applications-of-x-ray-and-neutron-scattering-in-biology-chemistry-and-physics/">DTU (47336)</a>
+    </p>
+    <p>Interactive learning quiz (2026)</p>
+  </header>
+
+  <div class="wrap">
+    <div class="controls">
+      <div class="seg" id="modeSeg">
+        <button data-mode="single" class="active">Part A · Single answer</button>
+        <button data-mode="multi">Part B · Multiple answers</button>
+      </div>
+    </div>
+
+    <div class="meta-row">
+      <span id="counter"></span>
+      <span id="scoreLabel"></span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+    <div id="quizArea"></div>
+  </div>
+
+  <footer>
+    Learn as you go � read the explanation after every question. Built from the course teaching material.
+  </footer>
+
+<script>
+/* ------------------------------------------------------------------ *
+ *  QUIZ DATA
+ *  type "single" = exactly one correct answer
+ *  type "multi"  = one or more correct answers
+ *  correct: array of indices into options
+ * ------------------------------------------------------------------ */
+const QUESTIONS = {
+  single: [
+    // Topic 1
+    { topic: "Mathematical Foundations",
+      lead: "Scattering experiments involve beam directions, momentum transfer, and displacements. These are described using vectors � quantities with both size and direction.",
+      q: "What is the main difference between a scalar and a vector?",
+      options: ["A vector has both magnitude and direction; a scalar has magnitude only","A scalar has direction; a vector does not","A vector has no physical units","Scalars are only used in MRI, not in scattering"],
+      correct: [0],
+      why: "Scalars (e.g. temperature, speed) are described by a single number. Vectors (e.g. momentum, beam direction) need magnitude and direction � essential when describing scattering geometry and Q." },
+    { topic: "Mathematical Foundations",
+      lead: "Complex exponentials are the most compact way to write a wave, and Euler's formula links them to trig functions.",
+      q: "According to Euler's formula, e^{i?} is equal to:",
+      options: ["cos ? + i sin ?","sin ? + i cos ?","cos ? ? i sin ?","i (cos ? + sin ?)"],
+      correct: [0],
+      why: "e^{i?} = cos ? + i sin ? lets us treat an oscillating wave as a single rotating complex number, so interference becomes a simple sum of complex amplitudes." },
+    { topic: "Mathematical Foundations",
+      lead: "Fourier analysis appears throughout the course: in diffraction, tomographic reconstruction, and signal processing. It starts with breaking signals into simple waves.",
+      q: "What does a Fourier series represent?",
+      options: ["A periodic function as a sum of sine and cosine waves","The cross product of two vectors","The neutron scattering cross-section of an element","The crystal system of a material"],
+      correct: [0],
+      why: "A Fourier series decomposes any periodic signal into harmonics (sines and cosines). This idea underpins how we interpret diffraction patterns and reconstruct images from projections." },
+    // Topic 2
+    { topic: "Large-Scale Facilities",
+      lead: "Free neutrons must be liberated from nuclei, and the two main production routes behave very differently.",
+      q: "What fundamentally distinguishes a spallation neutron source (e.g. ESS) from a fission reactor (e.g. ILL)?",
+      options: ["Spallation fires high-energy protons at a heavy-metal target to knock neutrons out of nuclei","Spallation relies on a sustained nuclear chain reaction","Spallation produces neutrons through chemical reactions","Spallation uses lasers to generate neutrons"],
+      correct: [0],
+      why: "Spallation 'spalls' neutrons from a heavy target hit by high-energy protons. A reactor uses a self-sustaining fission chain reaction. Spallation can be switched off instantly and makes fewer long-lived byproducts." },
+    { topic: "Large-Scale Facilities",
+      lead: "This course is built around two flagship facilities that sit side by side.",
+      q: "MAX IV (X-rays) and ESS (neutrons), the two facilities central to this course, are both located in/near:",
+      options: ["Lund, Sweden","Grenoble, France","Lyngby, Denmark","Hamburg, Germany"],
+      correct: [0],
+      why: "Both MAX IV (operating) and the European Spallation Source ESS are in Lund, just across the �resund from Copenhagen � a key reason this Danish course exists." },
+    { topic: "Large-Scale Facilities",
+      lead: "A synchrotron's defining quality is brilliance: many photons in a narrow, parallel, well-defined beam.",
+      q: "Why do synchrotron sources provide higher resolution and faster experiments than conventional laboratory X-ray tubes?",
+      options: ["They produce highly collimated and very intense (brilliant) beams","They operate at room temperature","They use visible light instead of X-rays","They focus the beam using magnetic monopoles"],
+      correct: [0],
+      why: "Near-light-speed electrons bent by magnets emit intense, collimated, tunable X-rays. High brilliance means more signal in less time and finer resolution than a lab tube." },
+    // Topic 3
+    { topic: "X-ray & Neutron Interactions",
+      lead: "X-rays and neutrons see matter through completely different physics � the whole reason we use both.",
+      q: "A key advantage of neutron diffraction over X-ray diffraction is that neutrons:",
+      options: ["Can detect and locate light elements such as hydrogen","Interact strongly with the electron cloud","Are cheaper to produce","Only image the sample surface"],
+      correct: [0],
+      why: "X-rays scatter from electrons, so light atoms (H, Li) are nearly invisible. Neutrons scatter from nuclei with a scattering length that does not scale with Z, so light atoms scatter strongly and can be located." },
+    { topic: "X-ray & Neutron Interactions",
+      lead: "Before any analysis we need a number for how 'visible' an atom is to the beam.",
+      q: "In a scattering experiment, what does the 'cross-section' represent?",
+      options: ["The probability (likelihood) that a scattering event occurs","The physical size of the detector","The wavelength of the beam","The scattering angle"],
+      correct: [0],
+      why: "The cross-section ? has units of area and quantifies the probability of an interaction. For a single nucleus it relates to the scattering length b via ? = 4?b�." },
+    { topic: "X-ray & Neutron Interactions",
+      lead: "Neutrons can pass through centimetres of metal � a behaviour that follows from how they interact.",
+      q: "Neutrons are highly penetrating in most materials because they:",
+      options: ["Are uncharged and interact only via the short-range nuclear force (and magnetic moments)","Interact strongly with the electron cloud of every atom","Carry a positive charge that repels nuclei","Are absorbed equally strongly by every nucleus"],
+      correct: [0],
+      why: "Having no charge, neutrons ignore electron clouds and electrostatic fields. They interact only with the tiny nucleus (and magnetic moments), so they penetrate deeply and act as a bulk probe." },
+    // Topic 4
+    { topic: "Diffraction",
+      lead: "Diffraction turns a crystal into a natural ruler. Bragg's law ties the measured angle to a distance inside the crystal.",
+      q: "In Bragg's law, n? = 2d sin?, the symbol d represents:",
+      options: ["The interplanar spacing in the crystal","The wavelength of the radiation","The angle of incidence","The sample-to-detector distance"],
+      correct: [0],
+      why: "d is the spacing between parallel lattice planes. Constructive interference occurs when 2d sin? equals a whole number of wavelengths, so measuring ? for known ? gives d." },
+    { topic: "Diffraction",
+      lead: "Crystals are classified by the symmetry of their repeating unit.",
+      q: "How many crystal systems exist in 3-dimensional space?",
+      options: ["7","5","14","3"],
+      correct: [0],
+      why: "There are 7 crystal systems (triclinic, monoclinic, orthorhombic, tetragonal, trigonal, hexagonal, cubic). Adding centring gives the 14 Bravais lattices � a common distractor." },
+    { topic: "Diffraction",
+      lead: "Most real samples are powders, not single crystals, making powder diffraction a workhorse technique.",
+      q: "A primary application of X-ray (or neutron) powder diffraction is:",
+      options: ["Phase identification and crystal-structure refinement (e.g. Rietveld)","Measuring the sample temperature","Measuring electrical conductivity","Imaging soft tissue"],
+      correct: [0],
+      why: "Each crystalline phase gives a characteristic 'fingerprint' set of Bragg peaks, allowing phase identification; Rietveld refinement of the full pattern yields lattice parameters and atomic positions." },
+    // Topic 5
+    { topic: "Small-Angle Scattering",
+      lead: "Small-angle scattering probes ~1�100 nm sizes. A simple low-angle plot gives the most useful size parameter.",
+      q: "What does a Guinier plot allow you to determine in small-angle scattering?",
+      options: ["The radius of gyration (overall particle size)","The crystal symmetry","The scattering length density of the solvent","The beam wavelength"],
+      correct: [0],
+      why: "In the low-Q Guinier region, ln I(Q) vs Q� is roughly linear; its slope gives the radius of gyration R_g, a model-independent measure of overall particle size." },
+    { topic: "Small-Angle Scattering",
+      lead: "The high-Q behaviour of the scattering curve reports on the interfaces between phases.",
+      q: "The Porod region/exponent (high-Q) is used to characterise:",
+      options: ["The sharpness and area of interfaces (surface-to-volume ratio)","The atomic number of the scatterers","The beam energy","The sample temperature"],
+      correct: [0],
+      why: "At high Q the intensity follows a power law. Sharp smooth interfaces give I(Q) ? Q??; deviations reveal rough/fractal surfaces � i.e. information about boundary sharpness and surface area." },
+    { topic: "Small-Angle Scattering",
+      lead: "SANS has a unique trick: you can change what the experiment 'sees' without changing the sample's chemistry.",
+      q: "In SANS, how can you change the contrast of a hydrogen-containing sample without altering its chemistry?",
+      options: ["By deuteration / adjusting the H?O:D?O solvent ratio","By increasing the beam intensity","By raising the sample temperature","By moving the detector"],
+      correct: [0],
+      why: "H and D have very different neutron scattering lengths (b_H negative, b_D positive). Swapping H for D, or mixing H?O/D?O, tunes the scattering-length density and can highlight or 'match out' specific components." },
+    // Topic 6
+    { topic: "Inelastic Scattering & Spectroscopy",
+      lead: "Scattering splits into two families depending on whether the probe gives up energy to the sample.",
+      q: "Which statement correctly describes inelastic scattering?",
+      options: ["Energy (and momentum) is exchanged, so the incident and scattered wavelengths differ","No energy is exchanged and the wavelength is unchanged","The beam only changes direction, never energy","It can only occur with X-rays, never neutrons"],
+      correct: [0],
+      why: "In inelastic scattering the probe exchanges energy with excitations (e.g. phonons), so its wavelength changes. Elastic scattering (diffraction) conserves energy and keeps the wavelength fixed." },
+    { topic: "Inelastic Scattering & Spectroscopy",
+      lead: "A very small energy-transfer regime around the elastic line carries information about slow motions.",
+      q: "Quasi-elastic neutron scattering (QENS) is mainly used to study:",
+      options: ["Molecular dynamics and diffusion","Crystal structures","Magnetic field strength","Sample temperature only"],
+      correct: [0],
+      why: "QENS measures the small energy broadening of the elastic line caused by diffusive/relaxational motion, giving timescales and geometries of molecular diffusion and reorientation." },
+    { topic: "Inelastic Scattering & Spectroscopy",
+      lead: "Whether scattering is coherent or incoherent decides whether you learn how atoms move together or individually.",
+      q: "Coherent inelastic neutron scattering primarily reveals:",
+      options: ["Collective excitations such as phonons (correlated atomic motion)","Independent single-atom diffusion","The detector's energy resolution","The beam wavelength"],
+      correct: [0],
+      why: "Coherent scattering preserves interference between atoms, so it probes correlated motion � collective modes like phonons and magnons. Incoherent scattering reports single-particle (self) motion." },
+    // Topic 7
+    { topic: "Imaging & Tomography",
+      lead: "Radiography and tomography rely on the Beer�Lambert law for how much beam survives the material.",
+      q: "According to the Beer�Lambert law, which factor does NOT significantly affect X-ray attenuation?",
+      options: ["Sample temperature","Material density (?)","Atomic number (Z)","Beam energy"],
+      correct: [0],
+      why: "X-ray attenuation depends on the material (density, atomic number) and the photon energy. Ordinary temperature changes do not meaningfully change the attenuation coefficient." },
+    { topic: "Imaging & Tomography",
+      lead: "Tomographic reconstructions contain tell-tale artefacts; recognising a ring artefact is a practical skill.",
+      q: "Concentric ring artefacts in tomographic reconstructions are typically caused by:",
+      options: ["Inhomogeneous or defective detector-pixel response (a consistent error at every angle)","The sample being too cold","Using too many projection angles","The Fourier transform itself"],
+      correct: [0],
+      why: "A mis-responding pixel introduces the same error in every projection angle. When back-projected, that constant angular error maps to a perfect circle/ring in the reconstructed slice." },
+    { topic: "Imaging & Tomography",
+      lead: "Turning a stack of projections (a sinogram) into a 3-D volume needs a specific operation.",
+      q: "Tomographic reconstruction from projections to a volume is performed using:",
+      options: ["Filtered back-projection / the inverse Radon transform","Bragg's law","The Stokes�Einstein equation","A Guinier plot"],
+      correct: [0],
+      why: "Projections are the Radon transform of the object. Reconstruction inverts it � classically by filtered back-projection: Fourier-transform each projection, apply a ramp filter, inverse-transform, and sum over all angles." },
+    // Topic 8
+    { topic: "MRI & Diffusion Imaging",
+      lead: "MRI contrast comes from two distinct relaxation processes; telling them apart is fundamental.",
+      q: "T2 relaxation in MRI reflects the loss of transverse magnetisation caused by:",
+      options: ["Spin�spin interactions","Spin�lattice interactions","The magnetic field strength alone","Proton density only"],
+      correct: [0],
+      why: "T2 (transverse) relaxation is driven by spin�spin interactions that dephase the precessing spins. T1 (longitudinal) recovery is instead a spin�lattice process exchanging energy with the surroundings." },
+    { topic: "MRI & Diffusion Imaging",
+      lead: "Diffusion MRI adds sensitivity to microscopic water motion via one scan parameter.",
+      q: "In diffusion MRI, the b-value controls:",
+      options: ["The degree of diffusion weighting","The image spatial resolution","The magnetic field strength","The signal-to-noise ratio directly"],
+      correct: [0],
+      why: "The b-value (b = q��t_d) combines gradient strength, duration and timing. Higher b makes the signal decay more with diffusion, S = S?�exp(?bD), setting sensitivity to water displacement." },
+    { topic: "MRI & Diffusion Imaging",
+      lead: "The first step of any MRI measurement is making proton spins precess at a known frequency.",
+      q: "The Larmor (resonance) frequency in MRI, f? = ?�B?, means that it:",
+      options: ["Increases proportionally with the static magnetic field strength B?","Is independent of the magnetic field","Decreases as the field gets stronger","Depends only on temperature"],
+      correct: [0],
+      why: "With ? ? 42.58 MHz/T for �H, f? scales linearly with B? (~298 MHz at 7 T). Higher fields give higher frequencies and more signal � why MRI pushes to stronger magnets." },
+    // Topic 9
+    { topic: "Radiation Safety, Detectors & Activation",
+      lead: "A common misconception is that uncharged particles are harmless. Neutrons are firmly ionizing radiation.",
+      q: "Although neutrons carry no charge, they are classified as ionizing radiation because they:",
+      options: ["Trigger nuclear reactions and recoils that release charged particles and gamma rays","Directly strip electrons from atoms with their charge","Carry a small positive charge","Emit visible light as they travel"],
+      correct: [0],
+      why: "Neutrons don't ionize directly, but capture/recoil events produce charged particles, recoil nuclei and gamma rays � secondary radiation that does ionize. Hence neutrons are ionizing radiation." },
+    { topic: "Radiation Safety, Detectors & Activation",
+      lead: "Detecting a slow neutron is hard because it leaves no direct electrical trace.",
+      q: "Slow (thermal) neutrons cannot be detected directly; detectors instead:",
+      options: ["Use nuclear reactions (e.g. in �He, ?Li, �?B) to convert neutrons into detectable charged particles","Measure the neutron's electric charge","Measure the visible glow of the neutron itself","Weigh the neutron on a microbalance"],
+      correct: [0],
+      why: "Being neutral and slow, neutrons produce no ionization alone. Converter nuclei (�He, ?Li, �?B, Gd) undergo capture reactions emitting charged particles, then registered by gas, scintillation or semiconductor detectors." },
+    { topic: "Radiation Safety, Detectors & Activation",
+      lead: "Choosing a spallation source over a reactor is partly a safety decision for the host region.",
+      q: "Why does a spallation source generally pose a lower long-term ionizing-radiation risk to its surroundings than a fission reactor?",
+      options: ["It has no sustained chain reaction and produces fewer long-lived radioactive byproducts","It uses enriched uranium fuel","It produces no neutrons at all","It operates entirely without shielding"],
+      correct: [0],
+      why: "A spallation source only produces neutrons while the accelerator is on, with no critical chain reaction, and makes fewer long-lived fission products � lowering long-term activation and waste risk for the host environment." }
+  ],
+  multi: [
+    { topic: "Mathematical Foundations",
+      lead: "The mathematics of waves and transforms underpins every technique in the course.",
+      q: "Which of the following statements about Fourier transforms and complex numbers are true?",
+      options: ["Real space and reciprocal (scattering) space are a Fourier-transform pair","The convolution theorem turns a convolution into a product in Fourier space","A complex exponential e^{i?} can represent an oscillating wave","The Fourier transform of a function always equals the function itself"],
+      correct: [0,1,2],
+      why: "A, B and C are core properties used throughout scattering and reconstruction. D is false � a function and its transform are generally completely different (a narrow spike transforms to a broad spectrum)." },
+    { topic: "Large-Scale Facilities",
+      lead: "Facilities differ in how they make the beam and how users get access.",
+      q: "Which statements about large-scale facilities are correct?",
+      options: ["Synchrotrons produce highly collimated, intense (brilliant) X-ray beams","Spallation sources use high-energy proton bombardment of a heavy-metal target","Beamtime is normally requested through a short proposal, reviewed roughly twice a year","Reactors generate neutrons through chemical reactions"],
+      correct: [0,1,2],
+      why: "A, B and C describe how these facilities work and how access is granted. D is false � reactors produce neutrons by nuclear fission, not chemistry." },
+    { topic: "X-ray & Neutron Interactions",
+      lead: "Neutrons and X-rays are genuinely different probes, exploited deliberately.",
+      q: "Which properties genuinely differ between neutrons and X-rays?",
+      options: ["Mass (the neutron has mass; the X-ray photon is massless)","Magnetic moment (the neutron has one and can scatter from magnetic structures)","What they interact with (neutrons: nuclei & magnetic moments; X-rays: the electron cloud)","Both are electrically charged"],
+      correct: [0,1,2],
+      why: "A, B and C are real differences that make the probes complementary. D is false � both the neutron and the photon are electrically neutral." },
+    { topic: "Diffraction",
+      lead: "Clean diffraction data is as much about practical care as about physics.",
+      q: "Which of the following are genuine challenges/considerations in diffraction experiments?",
+      options: ["Sample preparation and purity","Detector calibration","Beam-intensity fluctuations","The need to deuterate every X-ray sample"],
+      correct: [0,1,2],
+      why: "A, B and C are standard experimental challenges. D is false � deuteration is a neutron (SANS) contrast tool, irrelevant to ordinary X-ray diffraction." },
+    { topic: "Small-Angle Scattering",
+      lead: "Small-angle intensity depends on several physical and instrumental factors.",
+      q: "Which factors influence the measured intensity/contrast in small-angle scattering?",
+      options: ["The scattering-length-density distribution","The contrast between the phases","The instrument resolution","The visible colour of the sample"],
+      correct: [0,1,2],
+      why: "A, B and C all shape the small-angle signal. D is false � visible colour is an electronic/optical property unrelated to X-ray/neutron scattering-length contrast." },
+    { topic: "Inelastic Scattering & Spectroscopy",
+      lead: "Time-of-flight (TOF) spectrometers are a major way to measure dynamics.",
+      q: "Which of the following are advantages of time-of-flight (TOF) spectrometers?",
+      options: ["They can avoid using both a monochromator and an analyser","They give access to wide regions of (Q, ?) space","They can be built in direct- or indirect-geometry configurations","They are only suitable for purely elastic scattering"],
+      correct: [0,1,2],
+      why: "A, B and C are real strengths of TOF instruments, which use neutron arrival time to encode energy. D is false � TOF is used precisely to measure inelastic (energy-changing) processes." },
+    { topic: "Imaging & Tomography",
+      lead: "Modern imaging beamlines offer several complementary contrast mechanisms.",
+      q: "Which contrast mechanisms are available in X-ray and/or neutron imaging?",
+      options: ["Attenuation (absorption) contrast","Phase contrast","Bragg-edge / energy-dependent contrast (neutrons)","Spin-polarisation contrast available for X-rays"],
+      correct: [0,1,2],
+      why: "A, B and C are all used in practice. D is false � spin-polarisation (magnetic-field) imaging is neutron-only, exploiting the neutron's magnetic moment; X-ray photons cannot provide it." },
+    { topic: "MRI & Diffusion Imaging",
+      lead: "Diffusion MRI interprets water motion to infer tissue microstructure.",
+      q: "Which statements about diffusion MRI are correct?",
+      options: ["Free diffusion has an isotropic, Gaussian displacement distribution","The b-value sets the amount of diffusion weighting","Restricted diffusion along axons is anisotropic","Diffusion contrast arises from the T1 (spin�lattice) relaxation pathway"],
+      correct: [0,1,2],
+      why: "A, B and C correctly describe diffusion behaviour and weighting. D is false � diffusion weighting is added to the T2 (transverse) signal pathway, not T1." },
+    { topic: "Radiation Safety, Detectors & Activation",
+      lead: "Material choice and procedures keep neutron instruments safe and functional.",
+      q: "Which of the following are appropriate for neutron detection and/or safety?",
+      options: ["Boron and lithium are used for their high neutron-absorption cross-sections","Cadmium is used for shielding because of its high neutron absorption","Radiation monitoring and controlled-access zones are essential safety measures","Nickel is an ideal neutron-absorbing detector material"],
+      correct: [0,1,2],
+      why: "A, B and C are correct. D is false � nickel is prized for reflecting/guiding neutrons (neutron guides), not absorbing them; good absorbers are B, Li, Cd and Gd." }
+  ]
+};
+
+const LETTERS = ["A","B","C","D","E","F"];
+
+function shuffleOptions(item) {
+  const order = item.options.map((_, i) => i);
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const t = order[i]; order[i] = order[j]; order[j] = t;
+  }
+  const old = item.options;
+  item.options = order.map(i => old[i]);
+  const set = new Set(item.correct);
+  const nc = [];
+  order.forEach((orig, pos) => { if (set.has(orig)) nc.push(pos); });
+  item.correct = nc.sort((a, b) => a - b);
+}
+function shuffleMode(m) { QUESTIONS[m].forEach(shuffleOptions); }
+shuffleMode("single");
+shuffleMode("multi");
+
+let mode = "single";
+let idx = 0;
+let view = "intro";
+let answered = {};   // key `${mode}-${idx}` -> { selection:[], correct:bool }
+let scores = { single: 0, multi: 0 };
+
+const quizArea = document.getElementById("quizArea");
+const counter = document.getElementById("counter");
+const scoreLabel = document.getElementById("scoreLabel");
+const progress = document.getElementById("progress");
+
+document.querySelectorAll("#modeSeg button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("#modeSeg button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    mode = btn.dataset.mode;
+    idx = 0;
+    view = "intro";
+    tempSelection = [];
+    render();
+  });
+});
+
+function arraysEqual(a, b) {
+  if (a.length !== b.length) return false;
+  const sa = [...a].sort(), sb = [...b].sort();
+  return sa.every((v, i) => v === sb[i]);
+}
+
+function renderIntro() {
+  const isSingle = mode === "single";
+  const total = QUESTIONS[mode].length;
+  counter.textContent = isSingle ? "Part A" : "Part B";
+  scoreLabel.textContent = "";
+  progress.style.width = "0%";
+  const title = isSingle ? "Part A · Single answer" : "Part B · Multiple answers";
+  const summary = isSingle
+    ? `${total} questions across the nine course topics.`
+    : `${total} questions, one per course topic.`;
+  const lines = isSingle ? [
+    "Four answer options per question; exactly one is correct.",
+    "Read the short note before each question.",
+    "After answering, read the explanation to see why."
+  ] : [
+    "Four answer options per question; two or more may be correct.",
+    "Select all answers you think are right, then press Check.",
+    "After checking, read the explanation to see why."
+  ];
+  quizArea.innerHTML = `<div class="card intro">
+      <span class="topic-tag">${title}</span>
+      <h2>How it works</h2>
+      <p class="intro-note">${summary}</p>
+      <ul>${lines.map(l => `<li>${l}</li>`).join("")}</ul>
+      <p class="intro-note">Your score is shown at the top as you go.</p>
+      <div class="btn-row" style="justify-content:center;">
+        <button class="nav" id="startBtn">Start ${isSingle ? "Part A" : "Part B"} &rarr;</button>
+      </div>
+    </div>`;
+  document.getElementById("startBtn").addEventListener("click", () => {
+    Object.keys(answered).forEach(k => { if (k.startsWith(mode + "-")) delete answered[k]; });
+    scores[mode] = 0; idx = 0; tempSelection = []; view = "quiz"; render();
+  });
+}
+
+function render() {
+  if (view === "intro") { renderIntro(); return; }
+  const list = QUESTIONS[mode];
+  if (idx >= list.length) { renderResults(); return; }
+  const item = list[idx];
+  const key = `${mode}-${idx}`;
+  const state = answered[key];
+
+  counter.textContent = `Question ${idx + 1} of ${list.length}`;
+  scoreLabel.textContent = `Score: ${scores[mode]} / ${list.length}`;
+  progress.style.width = `${(idx / list.length) * 100}%`;
+
+  let html = `<div class="card">
+    <span class="topic-tag">${item.topic}</span>
+    <p class="lead">${item.lead}</p>
+    <p class="question">${item.q}</p>`;
+  if (mode === "multi") html += `<p class="hint">Select all that apply, then press Check.</p>`;
+  html += `<div class="options">`;
+
+  item.options.forEach((opt, i) => {
+    let cls = "option";
+    if (state) {
+      cls += " locked";
+      if (item.correct.includes(i)) cls += " correct";
+      else if (state.selection.includes(i)) cls += " wrong";
+    } else if (mode === "multi" && tempSelection.includes(i)) {
+      cls += " selected";
+    }
+    html += `<button class="${cls}" data-i="${i}">
+        <span class="letter">${LETTERS[i]}</span>
+        <span>${opt}</span>
+      </button>`;
+  });
+  html += `</div>`;
+
+  if (state) {
+    const cls = state.correct ? "good" : "bad";
+    const verdict = state.correct ? "Correct!" : "Not quite.";
+    const correctLetters = item.correct.map(c => LETTERS[c]).join(", ");
+    html += `<div class="explanation ${cls}">
+        <strong>${verdict}</strong> Correct answer${item.correct.length>1?'s':''}: ${correctLetters}.<br>${item.why}
+      </div>`;
+  }
+
+  html += `<div class="btn-row">
+      <button class="nav ghost" id="prevBtn" ${idx === 0 ? "disabled" : ""}>&larr; Previous</button>`;
+  if (!state && mode === "multi") {
+    html += `<button class="nav" id="checkBtn">Check answer</button>`;
+  } else if (state) {
+    html += `<button class="nav" id="nextBtn">${idx === list.length - 1 ? "See results" : "Next &rarr;"}</button>`;
+  } else {
+    html += `<span></span>`;
+  }
+  html += `</div></div>`;
+
+  quizArea.innerHTML = html;
+
+  quizArea.querySelectorAll(".option").forEach(b => {
+    b.addEventListener("click", () => onOptionClick(parseInt(b.dataset.i)));
+  });
+  const prevBtn = document.getElementById("prevBtn");
+  if (prevBtn) prevBtn.addEventListener("click", () => { idx--; tempSelection = []; render(); });
+  const nextBtn = document.getElementById("nextBtn");
+  if (nextBtn) nextBtn.addEventListener("click", () => { idx++; tempSelection = []; render(); });
+  const checkBtn = document.getElementById("checkBtn");
+  if (checkBtn) checkBtn.addEventListener("click", commitMulti);
+}
+
+let tempSelection = [];
+
+function onOptionClick(i) {
+  const key = `${mode}-${idx}`;
+  if (answered[key]) return;          // locked
+  if (mode === "single") {
+    const item = QUESTIONS.single[idx];
+    const correct = arraysEqual([i], item.correct);
+    answered[key] = { selection: [i], correct };
+    if (correct) scores.single++;
+    render();
+  } else {
+    if (tempSelection.includes(i)) tempSelection = tempSelection.filter(x => x !== i);
+    else tempSelection.push(i);
+    render();
+  }
+}
+
+function commitMulti() {
+  const key = `${mode}-${idx}`;
+  if (tempSelection.length === 0) return;
+  const item = QUESTIONS.multi[idx];
+  const correct = arraysEqual(tempSelection, item.correct);
+  answered[key] = { selection: [...tempSelection], correct };
+  if (correct) scores.multi++;
+  render();
+}
+
+function renderResults() {
+  const list = QUESTIONS[mode];
+  progress.style.width = `100%`;
+  counter.textContent = `Finished`;
+  scoreLabel.textContent = `Score: ${scores[mode]} / ${list.length}`;
+  const pct = Math.round((scores[mode] / list.length) * 100);
+  let msg;
+  if (pct === 100) msg = "Outstanding � full marks!";
+  else if (pct >= 75) msg = "Great work � strong understanding.";
+  else if (pct >= 50) msg = "Good start � review the explanations and retry.";
+  else msg = "Keep going � revisit the material and try again.";
+  quizArea.innerHTML = `<div class="card results">
+      <span class="topic-tag">${mode === "single" ? "Part A · Single answer" : "Part B · Multiple answers"}</span>
+      <div class="score">${pct}%</div>
+      <p>You answered <strong>${scores[mode]}</strong> of <strong>${list.length}</strong> correctly.</p>
+      <p>${msg}</p>
+      <div class="btn-row" style="justify-content:center;">
+        <button class="nav" id="retryBtn">Try again</button>
+        <button class="nav ghost" id="switchBtn">${mode === "single" ? "Go to Part B &rarr;" : "&larr; Back to Part A"}</button>
+      </div>
+    </div>`;
+  document.getElementById("retryBtn").addEventListener("click", () => {
+    Object.keys(answered).forEach(k => { if (k.startsWith(mode + "-")) delete answered[k]; });
+    scores[mode] = 0; idx = 0; tempSelection = []; shuffleMode(mode); view = "quiz"; render();
+  });
+  document.getElementById("switchBtn").addEventListener("click", () => {
+    document.querySelector(`#modeSeg button[data-mode="${mode === "single" ? "multi" : "single"}"]`).click();
+  });
+}
+
+render();
+</script>
+</body>
+</html>
