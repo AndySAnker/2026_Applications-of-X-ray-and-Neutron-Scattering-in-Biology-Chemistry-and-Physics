@@ -387,11 +387,11 @@ Vectors and Fourier transforms appear throughout scattering — from beam geomet
 **Which of the following statements are correct?**
 
 - A. A vector has both magnitude and direction **(correct)**
-- B. The scattering vector **Q** is a vector quantity **(correct)**
+- B. A scalar is defined by both magnitude and direction
 - C. Temperature is a typical vector quantity in scattering experiments
 - D. A Fourier transform links a real-space structure to its scattering pattern **(correct)**
 
-*Why:* A, B and D are foundational ideas used in every scattering experiment. C is false — temperature is a scalar (a single number with no direction), not a vector.
+*Why:* A and D are foundational ideas used in every scattering experiment. B is false — a scalar has magnitude only. C is false — temperature is a scalar, not a vector.
 
 ### B2 — Large-Scale Facilities
 Facilities differ in how they make the beam and how users get access.
@@ -408,14 +408,14 @@ Facilities differ in how they make the beam and how users get access.
 ### B3 — X-ray & Neutron Interactions
 Neutrons and X-rays are genuinely different probes, and the differences are exploited deliberately.
 
-**Which properties genuinely differ between neutrons and X-rays?**
+**Which statements about neutrons and X-rays are correct?**
 
-- A. Mass (the neutron has mass; the X-ray photon is massless) **(correct)**
-- B. Magnetic moment (the neutron has one and can scatter from magnetic structures) **(correct)**
-- C. What they interact with (neutrons: nuclei & magnetic moments; X-rays: the electron cloud) **(correct)**
-- D. Both are electrically charged
+- A. The neutron has mass; the X-ray photon is effectively massless **(correct)**
+- B. The neutron has a magnetic moment and can scatter from magnetic structures **(correct)**
+- C. Neutrons interact mainly with nuclei (and magnetic moments); X-rays interact mainly with electrons **(correct)**
+- D. Both the neutron and the X-ray photon are electrically neutral **(correct)**
 
-*Why:* A, B and C are real differences that make the two probes complementary. D is false — both the neutron and the photon are electrically neutral.
+*Why:* All four are correct. A–C describe key differences that make the probes complementary; D is a shared property (both are neutral) that is important when comparing them to charged particles.
 
 ### B4 — Diffraction
 Getting clean diffraction data is as much about practical care as about physics.
@@ -424,10 +424,10 @@ Getting clean diffraction data is as much about practical care as about physics.
 
 - A. Sample preparation and purity **(correct)**
 - B. Detector calibration **(correct)**
-- C. Beam-intensity fluctuations **(correct)**
+- C. Bragg's law is independent of the wavelength of the radiation used
 - D. The need to deuterate every X-ray sample
 
-*Why:* A, B and C are standard experimental challenges. D is false — deuteration is a neutron (SANS) contrast tool and is irrelevant to ordinary X-ray diffraction.
+*Why:* A and B are standard experimental challenges every diffractionist faces. C is false — Bragg's law explicitly involves wavelength (nλ = 2d sin θ). D is false — deuteration is a neutron (SANS) contrast tool, not a routine X-ray diffraction requirement.
 
 ### B5 — Small-Angle Scattering
 Small-angle intensity depends on several physical and instrumental factors.
@@ -437,9 +437,9 @@ Small-angle intensity depends on several physical and instrumental factors.
 - A. The scattering-length-density distribution **(correct)**
 - B. The contrast between the phases **(correct)**
 - C. The instrument resolution **(correct)**
-- D. The visible colour of the sample
+- D. Isotopic substitution (e.g. H/D) can change neutron contrast **(correct)**
 
-*Why:* A, B and C all shape the small-angle signal. D is false — visible colour is an optical (electronic) property unrelated to X-ray/neutron scattering-length contrast.
+*Why:* All four are correct. A–C shape the signal directly; D is a practical contrast tool widely used in neutron SANS (and irrelevant to most X-ray work — which is why deuteration appears as a distractor elsewhere).
 
 ### B6 — Inelastic Scattering & Spectroscopy
 Time-of-flight (TOF) spectrometers are a major way to measure dynamics.
@@ -460,10 +460,10 @@ Modern imaging beamlines offer several complementary contrast mechanisms.
 
 - A. Attenuation (absorption) contrast **(correct)**
 - B. Phase contrast **(correct)**
-- C. Bragg-edge / energy-dependent contrast (neutrons) **(correct)**
+- C. All imaging methods require a fully monochromatic beam to produce any contrast
 - D. Spin-polarisation contrast available for X-rays
 
-*Why:* A, B and C are all used in practice. D is false — spin-polarisation (magnetic-field) imaging is a *neutron-only* contrast, because it exploits the neutron's magnetic moment; X-ray photons cannot provide it.
+*Why:* A and B are widely used for both X-rays and neutrons. C is false — broadband (white-beam) attenuation imaging is common. D is false — spin-polarisation imaging is a *neutron-only* contrast that exploits the neutron's magnetic moment.
 
 ### B8 — MRI & Diffusion Imaging
 Diffusion MRI interprets water motion to infer tissue microstructure.
@@ -473,9 +473,9 @@ Diffusion MRI interprets water motion to infer tissue microstructure.
 - A. Free diffusion has an isotropic, Gaussian displacement distribution **(correct)**
 - B. The b-value sets the amount of diffusion weighting **(correct)**
 - C. Restricted diffusion along axons is anisotropic **(correct)**
-- D. Diffusion contrast arises from the T1 (spin–lattice) relaxation pathway
+- D. Diffusion tensor imaging (DTI) uses diffusion weighting along multiple directions **(correct)**
 
-*Why:* A, B and C are correct descriptions of diffusion behaviour and weighting. D is false — diffusion weighting is added to the T2 (transverse) signal pathway, not T1.
+*Why:* All four are correct descriptions of diffusion behaviour, weighting and how anisotropy is mapped in practice.
 
 ### B9 — Radiation Safety, Detectors & Activation
 Material choice and procedures keep neutron instruments safe and functional.
@@ -488,7 +488,6 @@ Material choice and procedures keep neutron instruments safe and functional.
 - D. Nickel is an ideal neutron-*absorbing* detector material
 
 *Why:* A, B and C are correct. D is false — nickel is prized for *reflecting/guiding* neutrons (neutron guides), not absorbing them; good absorbers are B, Li, Cd and Gd.
-
 ---
 
 *End of quiz. See `index.html` in this folder for the interactive version.*
