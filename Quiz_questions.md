@@ -30,28 +30,28 @@ Scattering experiments involve beam directions, momentum transfer, and displacem
 *Why:* Scalars (e.g. temperature, speed) are described by a single number. Vectors (e.g. momentum, beam direction) need magnitude and direction — essential when describing scattering geometry and Q.
 
 ### Q1.2
-Waves are at the heart of X-ray and neutron physics, and complex exponentials are the most compact way to write a wave. Euler's formula is the bridge between exponentials and trigonometric functions.
+The pattern on a detector is not the structure itself — it is a transform of it. This link between real space and reciprocal space is central to scattering and diffraction.
 
-**According to Euler's formula, e^{iφ} is equal to:**
+**What is the mathematical relationship between the real-space structure of a sample and its scattering/diffraction pattern (reciprocal space)?**
 
-- A. cos φ + i sin φ **(correct)**
-- B. sin φ + i cos φ
-- C. cos φ − i sin φ
-- D. i (cos φ + sin φ)
+- A. They are related by a Fourier transform **(correct)**
+- B. They are related by a simple linear scaling factor
+- C. They are identical to each other
+- D. They are related by a vector cross product
 
-*Why:* Euler's formula e^{iφ} = cos φ + i sin φ lets us represent an oscillating wave as a single rotating complex number, which makes adding waves (interference) a simple sum of complex amplitudes.
+*Why:* The scattered wave amplitude is the Fourier transform of the scattering-length-density (or electron-density) distribution. Real space and reciprocal (Q) space are a Fourier-transform pair — which is why small structures scatter to large angles and vice versa.
 
 ### Q1.3
-Fourier analysis appears throughout the course: in diffraction, tomographic reconstruction, and signal processing. It starts with breaking signals into simple waves.
+Different facilities deliver vastly different beam intensities. Knowing the typical ordering helps you choose an instrument and estimate measurement times.
 
-**What does a Fourier series represent?**
+**Which list orders these sources from lowest to highest typical beam flux/intensity on the sample?**
 
-- A. A periodic function as a sum of sine and cosine waves **(correct)**
-- B. The cross product of two vectors
-- C. The neutron scattering cross-section of an element
-- D. The crystal system of a material
+- A. In-house X-ray → Neutron source → Synchrotron → X-ray FEL (laser) **(correct)**
+- B. Neutron source → In-house X-ray → Synchrotron → X-ray FEL (laser)
+- C. In-house X-ray → Synchrotron → Neutron source → X-ray FEL (laser)
+- D. Synchrotron → In-house X-ray → X-ray FEL (laser) → Neutron source
 
-*Why:* A Fourier series decomposes any periodic signal into harmonics (sines and cosines). This idea underpins how we interpret diffraction patterns and reconstruct images from projections.
+*Why:* Laboratory X-ray tubes deliver the lowest flux. Large neutron facilities (reactors/spallation) provide much more flux than lab sources but generally less than synchrotron X-ray beamlines for comparable experiments. Synchrotrons are far brighter than lab tubes; X-ray free-electron lasers (XFELs) reach the highest peak flux of all.
 
 ---
 
@@ -70,16 +70,16 @@ Free neutrons do not exist in a bottle on the shelf — they must be liberated f
 *Why:* In spallation, a high-energy proton beam hits a heavy target (e.g. tungsten/mercury) and "spalls" neutrons from the nuclei. A reactor instead uses a self-sustaining fission chain reaction. Spallation has no chain reaction, so it can be switched off instantly and produces fewer long-lived radioactive byproducts.
 
 ### Q2.2
-The course is built around two flagship facilities that happen to sit side by side, making the region a world centre for scattering science.
+Fast neutrons from fission or spallation are too energetic for most scattering experiments. Facility design must slow them down before they reach the instruments.
 
-**MAX IV (X-rays) and ESS (neutrons), the two facilities central to this course, are both located in/near:**
+**What is the primary purpose of a moderator at a large-scale neutron source?**
 
-- A. Lund, Sweden **(correct)**
-- B. Grenoble, France
-- C. Lyngby, Denmark
-- D. Hamburg, Germany
+- A. To slow (thermalise) fast neutrons to usable energies **(correct)**
+- B. To increase the number of protons in the beam
+- C. To focus neutrons onto the sample
+- D. To detect neutrons after scattering
 
-*Why:* MAX IV (already operating) and the European Spallation Source ESS (starting operation in this decade) are both in Lund, just across the Øresund from Copenhagen — a key reason this Danish course exists.
+*Why:* Moderators (e.g. water or liquid hydrogen) slow fast neutrons through collisions until they reach thermal or cold energies. These energies match typical inter-atomic distances and excitations in samples — which is why moderated neutrons are used in diffraction and spectroscopy.
 
 ### Q2.3
 A synchrotron is far more than a big X-ray tube. Its defining quality is *brilliance* — many photons, in a narrow, parallel, well-defined beam.
