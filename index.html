@@ -393,11 +393,11 @@ const QUESTIONS = {
   ],
   multi: [
     { topic: "Mathematical Foundations",
-      lead: "The mathematics of waves and transforms underpins every technique in the course.",
-      q: "Which of the following statements about Fourier transforms and complex numbers are true?",
-      options: ["Real space and reciprocal (scattering) space are a Fourier-transform pair", "The convolution theorem turns a convolution into a product in Fourier space", "A complex exponential e^{iφ} can represent an oscillating wave", "The Fourier transform of a function always equals the function itself"],
-      correct: [0, 1, 2],
-      why: "A, B and C are core properties used throughout scattering and reconstruction. D is false — a function and its transform are generally completely different (a narrow spike transforms to a broad spectrum)." },
+      lead: "Vectors and Fourier transforms appear throughout scattering — from beam geometry to interpreting a diffraction pattern.",
+      q: "Which of the following statements are correct?",
+      options: ["A vector has both magnitude and direction", "The scattering vector Q is a vector quantity", "Temperature is a typical vector quantity in scattering experiments", "A Fourier transform links a real-space structure to its scattering pattern"],
+      correct: [0, 1, 3],
+      why: "A, B and D are foundational ideas used in every scattering experiment. C is false — temperature is a scalar (a single number with no direction), not a vector." },
     { topic: "Large-Scale Facilities",
       lead: "Facilities differ in how they make the beam and how users get access.",
       q: "Which statements about large-scale facilities are correct?",
@@ -497,6 +497,38 @@ function arraysEqual(a, b) {
   return sa.every((v, i) => v === sb[i]);
 }
 
+function formatText(s) {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/�/g, "&mdash;")
+    .replace(/—/g, "&mdash;")
+    .replace(/–/g, "&ndash;")
+    .replace(/·/g, "&middot;")
+    .replace(/→/g, "&rarr;")
+    .replace(/σ/g, "&sigma;")
+    .replace(/π/g, "&pi;")
+    .replace(/θ/g, "&theta;")
+    .replace(/λ/g, "&lambda;")
+    .replace(/ω/g, "&omega;")
+    .replace(/ρ/g, "&rho;")
+    .replace(/γ/g, "&gamma;")
+    .replace(/²/g, "&sup2;")
+    .replace(/₀/g, "&#8320;")
+    .replace(/₂/g, "&#8322;")
+    .replace(/⁻/g, "&#8315;")
+    .replace(/⁴/g, "&#8308;")
+    .replace(/⁶/g, "&#8309;")
+    .replace(/⁹/g, "&#8313;")
+    .replace(/⁰/g, "&#8304;")
+    .replace(/¹/g, "&sup1;")
+    .replace(/−/g, "&minus;")
+    .replace(/≈/g, "&asymp;")
+    .replace(/∝/g, "&prop;")
+    .replace(/ï¿½/g, "&mdash;");
+}
+
 function renderIntro() {
   const isSingle = mode === "single";
   const total = QUESTIONS[mode].length;
@@ -546,8 +578,8 @@ function render() {
 
   let html = `<div class="card">
     <span class="topic-tag">${item.topic}</span>
-    <p class="lead">${item.lead}</p>
-    <p class="question">${item.q}</p>`;
+    <p class="lead">${formatText(item.lead)}</p>
+    <p class="question">${formatText(item.q)}</p>`;
   if (mode === "multi") html += `<p class="hint">Select all that apply, then press Check.</p>`;
   html += `<div class="options">`;
 
@@ -562,7 +594,7 @@ function render() {
     }
     html += `<button class="${cls}" data-i="${i}">
         <span class="letter">${LETTERS[i]}</span>
-        <span>${opt}</span>
+        <span>${formatText(opt)}</span>
       </button>`;
   });
   html += `</div>`;
@@ -572,7 +604,7 @@ function render() {
     const verdict = state.correct ? "Correct!" : "Not quite.";
     const correctLetters = item.correct.map(c => LETTERS[c]).join(", ");
     html += `<div class="explanation ${cls}">
-        <strong>${verdict}</strong> Correct answer${item.correct.length>1?'s':''}: ${correctLetters}.<br>${item.why}
+        <strong>${verdict}</strong> Correct answer${item.correct.length>1?'s':''}: ${correctLetters}.<br>${formatText(item.why)}
       </div>`;
   }
 
@@ -635,10 +667,10 @@ function renderResults() {
   scoreLabel.textContent = `Score: ${scores[mode]} / ${list.length}`;
   const pct = Math.round((scores[mode] / list.length) * 100);
   let msg;
-  if (pct === 100) msg = "Outstanding — full marks!";
-  else if (pct >= 75) msg = "Great work — strong understanding.";
-  else if (pct >= 50) msg = "Good start — review the explanations and retry.";
-  else msg = "Keep going — revisit the material and try again.";
+  if (pct === 100) msg = "Outstanding &mdash; full marks!";
+  else if (pct >= 75) msg = "Great work &mdash; strong understanding.";
+  else if (pct >= 50) msg = "Good start &mdash; review the explanations and retry.";
+  else msg = "Keep going &mdash; revisit the material and try again.";
   quizArea.innerHTML = `<div class="card results">
       <span class="topic-tag">${mode === "single" ? "Part A · Single answer" : "Part B · Multiple answers"}</span>
       <div class="score">${pct}%</div>

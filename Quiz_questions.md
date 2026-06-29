@@ -382,16 +382,16 @@ Choosing a spallation source over a reactor is partly a safety and environmental
 ---
 
 ### B1 — Mathematical Foundations
-The mathematics of waves and transforms underpins every technique in the course.
+Vectors and Fourier transforms appear throughout scattering — from beam geometry to interpreting a diffraction pattern.
 
-**Which of the following statements about Fourier transforms and complex numbers are true?**
+**Which of the following statements are correct?**
 
-- A. Real space and reciprocal (scattering) space are a Fourier-transform pair **(correct)**
-- B. The convolution theorem turns a convolution into a product in Fourier space **(correct)**
-- C. A complex exponential e^{iφ} can represent an oscillating wave **(correct)**
-- D. The Fourier transform of a function always equals the function itself
+- A. A vector has both magnitude and direction **(correct)**
+- B. The scattering vector **Q** is a vector quantity **(correct)**
+- C. Temperature is a typical vector quantity in scattering experiments
+- D. A Fourier transform links a real-space structure to its scattering pattern **(correct)**
 
-*Why:* A, B and C are core properties used throughout scattering and reconstruction. D is false — a function and its Fourier transform are generally completely different (e.g. a narrow spike transforms to a broad, flat spectrum).
+*Why:* A, B and D are foundational ideas used in every scattering experiment. C is false — temperature is a scalar (a single number with no direction), not a vector.
 
 ### B2 — Large-Scale Facilities
 Facilities differ in how they make the beam and how users get access.
