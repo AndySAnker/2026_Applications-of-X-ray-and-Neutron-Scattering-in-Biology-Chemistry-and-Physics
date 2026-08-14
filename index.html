@@ -123,7 +123,7 @@
     align-items: flex-start;
     transition: border-color .15s, background .15s;
   }
-  .option:hover:not(.locked) { border-color: var(--accent); }
+  .option:hover:not(.locked):not(.selected) { border-color: var(--accent); }
   .option .letter {
     flex: 0 0 26px;
     height: 26px;
@@ -135,7 +135,16 @@
     font-size: 0.85rem;
     color: var(--muted);
   }
-  .option.selected { border-color: var(--accent); }
+  .option.selected {
+    border-color: var(--accent);
+    background: rgba(56, 189, 248, 0.2);
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.35);
+  }
+  .option.selected .letter { background: var(--accent); color: #06283d; }
+  .option.selected:hover:not(.locked) {
+    background: rgba(56, 189, 248, 0.26);
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.45);
+  }
   .option.correct { border-color: var(--correct); background: var(--correct-bg); }
   .option.correct .letter { background: var(--correct); color: #052e16; }
   .option.wrong { border-color: var(--wrong); background: var(--wrong-bg); }
