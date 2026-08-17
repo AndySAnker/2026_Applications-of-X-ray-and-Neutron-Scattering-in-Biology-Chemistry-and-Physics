@@ -590,6 +590,56 @@ function stopSpeech() {
   if (window.speechSynthesis) speechSynthesis.cancel();
 }
 
+const FEMALE_VOICE_NAMES = [
+  "google uk english female",
+  "google us english",
+  "microsoft sonia",
+  "microsoft libby",
+  "microsoft aria",
+  "microsoft jenny",
+  "microsoft zira",
+  "samantha",
+  "karen",
+  "moira",
+  "tessa",
+  "fiona",
+  "serena",
+  "kate",
+  "victoria",
+  "martha",
+];
+const MALE_VOICE_NAMES = ["daniel", "alex", "fred", "david", "mark", "george", "tom", "male"];
+
+let cachedFemaleVoice = null;
+
+function loadVoices() {
+  if (!window.speechSynthesis) return [];
+  return speechSynthesis.getVoices();
+}
+
+function pickFemaleVoice() {
+  const voices = loadVoices();
+  if (!voices.length) return cachedFemaleVoice;
+  const english = voices.filter(v => (v.lang || "").toLowerCase().startsWith("en"));
+  const pool = english.length ? english : voices;
+  const byName = (needles) => pool.find(v => {
+    const n = (v.name || "").toLowerCase();
+    return needles.some(needle => n.includes(needle));
+  });
+  cachedFemaleVoice =
+    byName(FEMALE_VOICE_NAMES) ||
+    pool.find(v => /female/i.test(v.name || "")) ||
+    pool.find(v => !MALE_VOICE_NAMES.some(m => (v.name || "").toLowerCase().includes(m))) ||
+    pool[0] ||
+    null;
+  return cachedFemaleVoice;
+}
+
+if (window.speechSynthesis) {
+  pickFemaleVoice();
+  speechSynthesis.addEventListener("voiceschanged", pickFemaleVoice);
+}
+
 function speakable(s) {
   return String(s)
     .replace(/H₂O/g, "H 2 O")
@@ -655,7 +705,13 @@ function speakQuestion(item, state, btn) {
     return;
   }
   const utter = new SpeechSynthesisUtterance(questionSpeechText(item, state));
-  utter.lang = "en-GB";
+  const voice = pickFemaleVoice();
+  if (voice) {
+    utter.voice = voice;
+    utter.lang = voice.lang || "en-GB";
+  } else {
+    utter.lang = "en-GB";
+  }
   utter.rate = 0.95;
   utter.onend = () => {
     if (btn) {
