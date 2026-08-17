@@ -152,32 +152,32 @@
         <strong>Scale</strong>
         <small>Volume fraction (SasView)</small>
         <div class="row" style="margin-top:8px">
-          <input type="range" id="pScale" min="0.001" max="100000" step="100" value="1" />
-          <input type="number" id="pScaleNum" min="0" max="100000" step="0.01" value="1" />
+          <input type="range" id="pScale" min="0" max="1000" step="1" value="5" />
+          <input type="number" id="pScaleNum" min="0" max="1000" step="1" value="5" />
         </div>
       </div>
       <div class="param">
         <strong>Background</strong>
         <small>Constant offset (a.u.)</small>
         <div class="row" style="margin-top:8px">
-          <input type="range" id="pBg" min="0" max="5" step="0.05" value="0" />
-          <input type="number" id="pBgNum" min="0" max="50" step="0.05" value="0" />
+          <input type="range" id="pBg" min="0" max="50" step="0.01" value="0.1" />
+          <input type="number" id="pBgNum" min="0" max="50" step="0.01" value="0.1" />
         </div>
       </div>
       <div class="param">
         <strong>Radius</strong>
         <small>Sphere radius <em>r</em> (&Aring;)</small>
         <div class="row" style="margin-top:8px">
-          <input type="range" id="pRadius" min="5" max="150" step="1" value="50" />
-          <input type="number" id="pRadiusNum" min="1" max="500" step="1" value="50" />
+          <input type="range" id="pRadius" min="0" max="100" step="0.1" value="50" />
+          <input type="number" id="pRadiusNum" min="0" max="100" step="0.1" value="50" />
         </div>
       </div>
       <div class="param">
         <strong>Polydispersity</strong>
         <small>&sigma;<sub>R</sub>/<em>r</em> (Gaussian on radius)</small>
         <div class="row" style="margin-top:8px">
-          <input type="range" id="pPd" min="0" max="0.4" step="0.01" value="0" />
-          <input type="number" id="pPdNum" min="0" max="1" step="0.01" value="0" />
+          <input type="range" id="pPd" min="0" max="0.5" step="0.01" value="0.25" />
+          <input type="number" id="pPdNum" min="0" max="0.5" step="0.01" value="0.25" />
         </div>
       </div>
     </div>
@@ -305,14 +305,16 @@ function polydisperseSphereIntensity(q, scale, radius, sld, sldSolvent, backgrou
   return Ipd + background;
 }
 
-// Fixed contrast + a.u. calibration (no longer user-adjustable parameters).
+// Fixed contrast + a.u. calibration. CAL_FACTOR is applied to the sphere
+// (scale) term only; background is entered in the same units as the data.
 const SLD = 10;                        // scatterer SLD (10^-6 Å^-2)
 const SLD_SOLVENT = 6;                 // solvent SLD  (10^-6 Å^-2)
-const CAL_FACTOR = Math.pow(10, 6.5);  // fixed calibration mapping to a.u. data
+const CAL_FACTOR = Math.pow(10, 6.5);
 
 function modelIntensity(q, p) {
-  return CAL_FACTOR * polydisperseSphereIntensity(
-    q, p.scale, p.radius, SLD, SLD_SOLVENT, p.background, p.pd);
+  const sphere = polydisperseSphereIntensity(
+    q, p.scale, p.radius, SLD, SLD_SOLVENT, 0, p.pd);
+  return CAL_FACTOR * sphere + p.background;
 }
 
 /** Dense q grid so sphere minima (ripples) are resolved — data points alone are too sparse. */
@@ -434,12 +436,10 @@ function renderInspect() {
     `Fitting range: ${state.qMin.toFixed(4)} – ${state.qMax.toFixed(4)} Å\u207B\u00B9  (${inside.length} of ${DATA.q.length} points)`;
 }
 
-const BG_FACTOR = 1000;  // user background slider is divided by this in the model
-
 function getParams() {
   return {
     scale: +document.getElementById("pScaleNum").value,
-    background: +document.getElementById("pBgNum").value / BG_FACTOR,
+    background: +document.getElementById("pBgNum").value,
     radius: +document.getElementById("pRadiusNum").value,
     pd: +document.getElementById("pPdNum").value,
   };
